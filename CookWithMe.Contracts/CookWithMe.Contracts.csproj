@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\CookWithMe.Data\CookWithMe.Data.csproj" />
+    </ItemGroup>
+
 </Project>
