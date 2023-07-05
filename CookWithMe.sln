@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookWithMe.Api", "CookWithMe.Api\CookWithMe.Api.csproj", "{E651FC71-2965-414B-B29B-210D48C99DAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookWithMe.Data", "CookWithMe.Data\CookWithMe.Data.csproj", "{1B18FB56-BEE5-4888-BAEB-FA456840E45F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookWithMe.Contracts", "CookWithMe.Contracts\CookWithMe.Contracts.csproj", "{9FFFA5FA-32AB-4426-9DF7-D6D212500E50}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E651FC71-2965-414B-B29B-210D48C99DAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E651FC71-2965-414B-B29B-210D48C99DAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E651FC71-2965-414B-B29B-210D48C99DAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E651FC71-2965-414B-B29B-210D48C99DAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B18FB56-BEE5-4888-BAEB-FA456840E45F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B18FB56-BEE5-4888-BAEB-FA456840E45F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B18FB56-BEE5-4888-BAEB-FA456840E45F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B18FB56-BEE5-4888-BAEB-FA456840E45F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FFFA5FA-32AB-4426-9DF7-D6D212500E50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FFFA5FA-32AB-4426-9DF7-D6D212500E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FFFA5FA-32AB-4426-9DF7-D6D212500E50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FFFA5FA-32AB-4426-9DF7-D6D212500E50}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
