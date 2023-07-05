@@ -18,7 +18,6 @@ public class Meal
     [Required]
     public string Description { get; set; } = null!;
     [Required]
-    public int UserId { get; set; }
-    
+    public string UserId { get; set; } = null!;
     public User User { get; set; } = null!;
 }
