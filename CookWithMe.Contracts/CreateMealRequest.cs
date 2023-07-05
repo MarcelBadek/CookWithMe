@@ -5,4 +5,5 @@ namespace CookWithMe.Contracts;
 public record CreateMealRequest(
     MealType MealType,
     string Name,
-    string Description);
+    string Description
+);
