@@ -1,24 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace CookWithMe.Data.Entities;
 
-public class User : EntityBase
+public class User : IdentityUser
 {
-    [Key]
-    public Guid Id { get; set; }
-
     public string? FirstName { get; set; }
-    
     public string? LastName { get; set; }
-    
-    public string? Nickname { get; set; }
-
-    [Required]
-    public string Email { get; set; } = null!;
-    
-    [Required]
-    public string PasswordHash { get; set; } = null!;
-
-    [Required]
-    public string PasswordSalt { get; set; } = null!;
+    public List<Meal> Meals { get; set; }
 }

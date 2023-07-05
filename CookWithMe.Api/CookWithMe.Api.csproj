@@ -16,4 +16,9 @@
       <Folder Include="Controllers\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\CookWithMe.Contracts\CookWithMe.Contracts.csproj" />
+      <ProjectReference Include="..\CookWithMe.Data\CookWithMe.Data.csproj" />
+    </ItemGroup>
+
 </Project>
