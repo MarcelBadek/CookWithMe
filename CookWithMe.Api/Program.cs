@@ -1,27 +1,21 @@
+using CookWithMe.Data;
 using CookWithMe.Data.Data;
-using CookWithMe.Data.Options;
-using Microsoft.EntityFrameworkCore;
+using CookWithMe.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 
-services.ConfigureOptions<DatabaseOptionSetup>();
+ConfigureServices.SetupDb(services);
 
-services.AddDbContext<AppDbContext>((serviceProvider, options)=>
-{
-    var databaseOptions = serviceProvider.GetService<IOptions<DatabaseOptions>>()!.Value;
-        
-    options.UseSqlServer(databaseOptions.ConnectionString, sqlServerAction =>
+services.AddIdentity<User, IdentityRole>(options =>
     {
-        sqlServerAction.EnableRetryOnFailure(databaseOptions.MaxRetryCount);
-        sqlServerAction.CommandTimeout(databaseOptions.CommandTimeout);
-        sqlServerAction.MigrationsAssembly("CookWithMe.Api");
-    });
-    options.EnableDetailedErrors(databaseOptions.EnableDetailedErrors);
-    options.EnableSensitiveDataLogging(databaseOptions.EnableSensitiveDataLogging);
-});
+        options.User.RequireUniqueEmail = true;
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
 
 services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
