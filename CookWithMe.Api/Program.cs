@@ -2,6 +2,7 @@ using System.Text;
 using CookWithMe.Data;
 using CookWithMe.Data.Data;
 using CookWithMe.Data.Entities;
+using CookWithMe.Data.Repositories;
 using CookWithMe.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -43,6 +44,7 @@ services.AddAuthentication(options =>
 services.AddAuthorization();
 
 services.AddTransient<IJwtService, JwtService>();
+services.AddScoped<IMealRepository, MealRepository>();
 
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(options =>
