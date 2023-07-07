@@ -71,16 +71,14 @@ public class UserController : ControllerBase
         
         if (user is null)
         {
-            // TODO
-            throw new Exception();
+            return BadRequest("Invalid data");
         }
         
         var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, loginUserRequest.Password);
         
         if (!isPasswordCorrect)
         {
-            // TODO
-            throw new Exception();
+            return BadRequest("Invalid data");
         }
         
         var token = _jwtService.GenerateToken(user);
