@@ -1,7 +1,7 @@
 ﻿using CookWithMe.Contracts;
 using CookWithMe.Data.Entities;
 using CookWithMe.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
+using CookWithMe.Validators;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,38 +13,44 @@ public class UserController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
     private readonly IJwtService _jwtService;
+    private readonly RegisterUserValidator _userValidator;
 
     public UserController(UserManager<User> userManager, IJwtService jwtService)
     {
         _userManager = userManager;
         _jwtService = jwtService;
+        _userValidator = new RegisterUserValidator();
     }
 
     [HttpPost]
     [Route("/register")]
     public async Task<IActionResult> RegisterUser(RegisterUserRequest registerUserRequest)
     {
-        var user = await _userManager.FindByEmailAsync(registerUserRequest.Email);
-
-        if (user is not null)
+        var user = MapToUser(registerUserRequest);
+        
+        var validationResult = await _userValidator.ValidateAsync(user);
+        if (!validationResult.IsValid)
         {
-            // TODO 
-            throw new Exception();
+            return BadRequest(validationResult.Errors);
         }
         
-        // TODO validate data
-
-        var newUser = new User()
+        if (await _userManager.FindByEmailAsync(user.Email!) is not null)
         {
-            FirstName = registerUserRequest.FirstName,
-            LastName = registerUserRequest.LastName,
-            UserName = registerUserRequest.Nickname,
-            Email = registerUserRequest.Email,
-        };
+            return Conflict("User with this email address already exists");
+        }
         
-        var result = await _userManager.CreateAsync(newUser, registerUserRequest.Password);
+        if (await _userManager.FindByNameAsync(user.UserName!) is not null)
+        {
+            return Conflict("User with this nickname address already exists");
+        }
         
-        return Ok(result);
+        var result = await _userManager.CreateAsync(user, registerUserRequest.Password);
+        if (!result.Succeeded)
+        {
+            return Conflict(result.Errors);
+        }
+        
+        return Ok("Account created");
     }
 
     [HttpPost]
@@ -80,5 +86,16 @@ public class UserController : ControllerBase
         var token = _jwtService.GenerateToken(user);
         
         return Ok(token);
+    }
+    
+    private static User MapToUser(RegisterUserRequest registerUserRequest)
+    {
+        return new User
+        {
+            UserName = registerUserRequest.Nickname,
+            FirstName = registerUserRequest.FirstName,
+            LastName = registerUserRequest.LastName,
+            Email = registerUserRequest.Email
+        };
     }
 }
