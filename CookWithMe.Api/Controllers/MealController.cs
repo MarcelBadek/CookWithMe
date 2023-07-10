@@ -27,7 +27,7 @@ public class MealController : ControllerBase
         
         if (meal is null)
         {
-            return BadRequest($"Meal with id {meal} does not exists");
+            return BadRequest($"Meal with id: {id} does not exists");
         }
 
         var user = await _userManager.FindByIdAsync(meal.UserId);
@@ -42,18 +42,13 @@ public class MealController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateMeal(CreateMealRequest createMealRequest)
     {
-        var userId = User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+        var userId = await GetUserId();
         
         if (userId is null)
         {
             return Unauthorized();
         }
 
-        if (await _userManager.FindByIdAsync(userId) is null)
-        {
-            return Unauthorized();
-        }
-        
         var meal = MapToMeal(createMealRequest, userId);
         
         // TODO validate
@@ -67,6 +62,31 @@ public class MealController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateMeal(Guid id, UpdateMealRequest updateMealRequest)
     {
+        var mealToChange = await _mealRepository.GetMealById(id, new CancellationToken());
+
+        if (mealToChange is null)
+        {
+            return BadRequest($"Meal with id: {id} does not exists");
+        }
+        
+        var userId = await GetUserId();
+        
+        if (userId is null || userId != mealToChange.UserId)
+        {
+            return Unauthorized();
+        }
+        
+        var meal = MapToMeal(updateMealRequest);
+        
+        // TODO validate
+
+        mealToChange.MealType = meal.MealType;
+        mealToChange.Name = meal.Name;
+        mealToChange.Description = meal.Description;
+        mealToChange.ModifiedAt = DateTime.Now;
+
+        await _mealRepository.UpdateMeal(mealToChange, new CancellationToken());
+
         return Ok();
     }
 
@@ -86,6 +106,14 @@ public class MealController : ControllerBase
             UserId = userId
         };
     
+    private static Meal MapToMeal(UpdateMealRequest updateMealRequest)
+        => new Meal
+        {
+            MealType = updateMealRequest.MealType,
+            Name = updateMealRequest.Name,
+            Description = updateMealRequest.Description
+        };
+    
     private static MealResponse MapToMealResponse(Meal meal, string userName)
         => new MealResponse
         (
@@ -97,4 +125,21 @@ public class MealController : ControllerBase
             meal.Description,
             userName
         );
+
+    private async Task<string?> GetUserId()
+    {
+        var userId = User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
+        
+        if (userId is null)
+        {
+            return null;
+        }
+
+        if (await _userManager.FindByIdAsync(userId) is null)
+        {
+            return null;
+        }
+
+        return userId;
+    }
 }
