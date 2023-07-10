@@ -16,12 +16,19 @@ public class MealRepository : IMealRepository
     public async Task<Meal?> GetMealById(Guid id, CancellationToken cancellationToken)
         => await _context
             .Meals
+            .Where(x => x.DeletedAt == null)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
     public async Task AddMeal(Meal meal, CancellationToken cancellationToken)
     {
         _context.Add(meal);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateMeal(Meal meal, CancellationToken cancellationToken)
+    {
+        _context.Update(meal);
         await _context.SaveChangesAsync(cancellationToken);
     }
 }
