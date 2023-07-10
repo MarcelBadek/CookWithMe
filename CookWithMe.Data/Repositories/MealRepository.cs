@@ -31,4 +31,13 @@ public class MealRepository : IMealRepository
         _context.Update(meal);
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task DeleteMeal(Meal meal, CancellationToken cancellationToken)
+    {
+        meal.ModifiedAt = DateTime.Now;
+        meal.DeletedAt = DateTime.Now;
+
+        _context.Update(meal);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
 }

@@ -7,4 +7,5 @@ public interface IMealRepository
     Task<Meal?> GetMealById(Guid id, CancellationToken cancellationToken);
     Task AddMeal(Meal meal, CancellationToken cancellationToken);
     Task UpdateMeal(Meal meal, CancellationToken cancellationToken);
+    Task DeleteMeal(Meal meal, CancellationToken cancellationToken);
 }
