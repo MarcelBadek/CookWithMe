@@ -71,7 +71,7 @@ public class MealController : ControllerBase
         
         var userId = await GetUserId();
         
-        if (userId is null || userId != mealToChange.UserId)
+        if (userId != mealToChange.UserId)
         {
             return Unauthorized();
         }
@@ -94,6 +94,22 @@ public class MealController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteMeal(Guid id)
     {
+        var mealToDelete = await _mealRepository.GetMealById(id, new CancellationToken());
+
+        if (mealToDelete is null)
+        {
+            return BadRequest($"Meal with id: {id} does not exists");
+        }
+
+        var userId = await GetUserId();
+        
+        if (userId != mealToDelete.UserId)
+        {
+            return Unauthorized();
+        }
+
+        await _mealRepository.DeleteMeal(mealToDelete, new CancellationToken());
+
         return Ok();
     }
 
