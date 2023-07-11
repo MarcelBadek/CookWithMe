@@ -1,6 +1,7 @@
 ﻿using CookWithMe.Contracts;
 using CookWithMe.Data.Entities;
 using CookWithMe.Data.Repositories;
+using CookWithMe.Validators;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,13 @@ public class MealController : ControllerBase
 {
     private readonly IMealRepository _mealRepository;
     private readonly UserManager<User> _userManager;
+    private readonly MealValidator _mealValidator;
 
     public MealController(IMealRepository mealRepository, UserManager<User> userManager)
     {
         _mealRepository = mealRepository;
         _userManager = userManager;
+        _mealValidator = new MealValidator();
     }
 
     [HttpGet("{id:guid}")]
@@ -50,8 +53,13 @@ public class MealController : ControllerBase
         }
 
         var meal = MapToMeal(createMealRequest, userId);
-        
-        // TODO validate
+
+        var validationResult = await _mealValidator.ValidateAsync(meal);
+
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.Errors);
+        }
         
         await _mealRepository.AddMeal(meal, new CancellationToken());
         
@@ -78,7 +86,12 @@ public class MealController : ControllerBase
         
         var meal = MapToMeal(updateMealRequest);
         
-        // TODO validate
+        var validationResult = await _mealValidator.ValidateAsync(meal);
+
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.Errors);
+        }
 
         mealToChange.MealType = meal.MealType;
         mealToChange.Name = meal.Name;
