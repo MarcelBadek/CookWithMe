@@ -20,6 +20,16 @@ public class MealRepository : IMealRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
+    public async Task<List<Meal>> GetUserMeals(Guid id, CancellationToken cancellationToken)
+    {
+        var meals = await _context
+            .Meals
+            .Where(x => x.DeletedAt == null && x.UserId == id.ToString())
+            .ToListAsync(cancellationToken);
+
+        return meals;
+    }
+
     public async Task AddMeal(Meal meal, CancellationToken cancellationToken)
     {
         _context.Add(meal);

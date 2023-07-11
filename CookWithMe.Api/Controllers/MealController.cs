@@ -41,6 +41,24 @@ public class MealController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("/user/{id:guid}")]
+    public async Task<IActionResult> GetUserMeals(Guid id)
+    {
+        var meals = await _mealRepository.GetUserMeals(id, new CancellationToken());
+
+        if (meals.Count == 0)
+        {
+            return BadRequest($"User with id: {id} does not have meals");
+        }
+        
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        var userName = user!.UserName!;
+
+        var list = meals.Select(meal => MapToMealResponse(meal, userName)).ToList();
+
+        return Ok(list);
+    }
+
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateMeal(CreateMealRequest createMealRequest)
